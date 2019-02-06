@@ -53,8 +53,11 @@ public class DbServiceResource {
 	@PostMapping("/delete/{username}")
 	public List<String> delete(@PathVariable("username") final String username) {
 
-		List<Quote> quotes = quotesRepository.findByUserName(username);
-		quotesRepository.delete((Quote) quotes);
+		quotesRepository.findByUserName(username)
+		.stream()
+		.map(Quote::getId)
+		.collect(Collectors.toList())
+		.forEach(s -> quotesRepository.deleteById(s));
 
 		return getQuotesByUserName(username);
 	}
